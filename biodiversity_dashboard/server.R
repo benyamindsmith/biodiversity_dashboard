@@ -8,7 +8,13 @@
 #
 
 library(shiny)
+library(RSQLite)
+library(sparklyr)
 
+sqlite <- dbDriver("SQLite")
+conn <- dbConnect(sqlite,"biodiversity_database.db")
+
+occurence_pl <- dbGetQuery(conn, "SELECT * FROM occurence WHERE country")
 # Define server logic required to draw a histogram
 function(input, output, session) {
 
