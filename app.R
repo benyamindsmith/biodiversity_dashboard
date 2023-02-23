@@ -9,7 +9,7 @@ library(sf)
 
 
 occurrence_pl <-
-  readr::read_csv("./biodiversity-data/occurrence_pl.csv") %>%
+  readr::read_csv("./data/occurrence_pl.csv") %>%
   mutate(
     month = eventDate %>%
       as.Date() %>%
@@ -100,7 +100,6 @@ server <- function(input, output, session) {
              between(month_year,input$filterTime[1],input$filterTime[2])) %>%
       leaflet(options = leafletOptions(attributionControl=FALSE)) %>%
       addTiles() %>% 
-      addProviderTiles(provider=providers$Thunderforest.Transport) %>%
       addMarkers(
         clusterOptions = markerClusterOptions(),
         lng =  ~ longitudeDecimal,
