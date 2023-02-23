@@ -4,10 +4,9 @@ library(lubridate)
 library(glue)
 library(leaflet)
 library(plotly)
-library(sf)
 
 # TODO: MODULARIZE THE CODE!!
-
+# TODO: NAMING SUCKS. FIX IT!!
 occurrence_pl <-
   readr::read_csv("./data/occurrence_pl.csv") %>%
   mutate(
