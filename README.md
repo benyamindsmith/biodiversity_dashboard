@@ -1,3 +1,4 @@
+![](https://raw.githubusercontent.com/benyamindsmith/appsilon_app/main/www/appsilon_logo.png?token=GHSAT0AAAAAABXQSBT32RUKTJZV4OAE5MA4Y7WXVWQ)
 # Biodiversity Dashboard Assignment
 
 A submission of the Biodiversity Dashboard Assignment for the Appsilon Shiny Developer Job Posting
