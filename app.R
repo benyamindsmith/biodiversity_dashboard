@@ -8,8 +8,8 @@ library(sf)
 
 
 
-occurence_pl <-
-  readr::read_csv("./biodiversity-data/occurence_pl.csv") %>%
+occurrence_pl <-
+  readr::read_csv("./biodiversity-data/occurrence_pl.csv") %>%
   mutate(
     month = eventDate %>%
       as.Date() %>%
@@ -67,10 +67,10 @@ ui <- fluidPage(
   column(3,
   sliderInput("filterTime",
               "Filter By Date (Month-Year)",
-              value = c(min(as.Date(occurence_pl$month_year)),
-                        max(as.Date(occurence_pl$month_year))),
-              min= min(as.Date(occurence_pl$month_year)),
-              max= max(as.Date(occurence_pl$month_year)),
+              value = c(min(as.Date(occurrence_pl$month_year)),
+                        max(as.Date(occurrence_pl$month_year))),
+              min= min(as.Date(occurrence_pl$month_year)),
+              max= max(as.Date(occurrence_pl$month_year)),
               timeFormat="%b %Y"))),
   # Sidebar with a slider input for number of bins
   fixedRow(column(6,
@@ -85,7 +85,7 @@ server <- function(input, output, session) {
   updateSelectizeInput(
     session,
     'searchSpecies',
-    choices = unique(occurence_pl$display_name),
+    choices = unique(occurrence_pl$display_name),
     selected="Alces alces (Elk)",
     server = TRUE
   )
@@ -95,7 +95,7 @@ server <- function(input, output, session) {
   })
   
   mapOutput <- eventReactive(toListen(), {
-    occurence_pl %>%
+    occurrence_pl %>%
       filter(display_name == input$searchSpecies,
              between(month_year,input$filterTime[1],input$filterTime[2])) %>%
       leaflet(options = leafletOptions(attributionControl=FALSE)) %>%
@@ -113,7 +113,7 @@ server <- function(input, output, session) {
   
   timelineData <- eventReactive(toListen(),
                                 {
-                                  occurence_pl %>%
+                                  occurrence_pl %>%
                                     filter(display_name == input$searchSpecies,
                                            between(month_year,input$filterTime[1],input$filterTime[2])) %>%
                                     group_by(month_year) %>%
@@ -126,7 +126,7 @@ server <- function(input, output, session) {
                                       mode = "lines"
                                     ) %>%
                                     layout(
-                                      title = "Occurences Over Time",
+                                      title = "occurrences Over Time",
                                       xaxis = list(title = ""),
                                       yaxis = list(title = "")
                                     )

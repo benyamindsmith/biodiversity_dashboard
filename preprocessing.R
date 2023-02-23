@@ -1,27 +1,23 @@
-# Preprocessing
-library(data.table)
-library(fst)
 library(sparklyr)
+library(DBI)
 
-# download_filepath <- "C:/Users/ben29/Downloads/biodiversity-data.tar.gz"
-# 
-# untar(download_filepath)
+# The file path for where the tar.gz file is downloaded
 
-# Now load data into SQLite by importing the csv files. 
+download_filepath <- "./Downloads/biodiversity-data.tar.gz"
 
-setwd("./appsilon_app/biodiversity_dashboard")
+untar(download_filepath)
+
+# Load the data with spark 
+
+setwd("./appsilon_app")
+
 sc <- spark_connect(master = "local")
 
-sparklyr::spark_read_csv(sc=sc,
-                         name="multimedia",
-                         path="./biodiversity-data/multimedia.csv",
-                         memory=FALSE)
+spark_read_csv(sc=sc,
+               name="occurrence",
+               path="./data/occurrence.csv",
+               memory=FALSE)
 
-sparklyr::spark_read_csv(sc=sc,
-                         name="occurence",
-                         path="./biodiversity-data/occurence.csv",
-                         memory=FALSE)
-
-
-
-occurencePL <- dbGetQuery(sc,"SELECT * FROM occurence WHERE countryCode=='PL'")
+# Query the occurrence data for only Poland data
+dbGetQuery(sc,"SELECT * FROM occurrence WHERE countryCode=='PL'") |> 
+readr::write_csv("./data/occurrence_pl.csv")
