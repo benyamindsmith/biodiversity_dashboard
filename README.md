@@ -12,6 +12,8 @@ The finished product looks like this:
 
 ![image](https://user-images.githubusercontent.com/46410142/220816538-b836c938-99ed-4845-bb0f-eede3a59d106.png)
 
+**For the scope of this project, only the occurrence data set has been used. Should additional features be requested the multimedia data set can also be used.**
+
 ## What does this address
 
 The finished product addresses the following:
@@ -86,7 +88,6 @@ readr::write_csv("./data/occurrence_pl.csv")
 
 This can also be seen [preprocessing.R](https://github.com/benyamindsmith/appsilon_app/blob/main/preprocessing.R).
 
-**For the scope of this project, only the occurrence data set has been used. Should additional features be requested the multimedia data set can also be used.**
 
 ## Modularized Code
 
