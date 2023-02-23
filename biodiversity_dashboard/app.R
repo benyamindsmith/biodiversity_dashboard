@@ -1,4 +1,5 @@
 library(shiny)
+library(crosstalk)
 library(tidyverse)
 library(lubridate)
 library(glue)
@@ -7,28 +8,45 @@ library(plotly)
 library(sf)
 
 
+
 occurence_pl <-
   readr::read_csv("./biodiversity-data/occurence_pl.csv") %>%
   mutate(
-    display_name = ifelse(is.na(vernacularName), scientificName,glue(
-      "{scientificName} ({vernacularName})",
-      scientificName = scientificName,
-      vernacularName = vernacularName
-    )),
+    month = eventDate %>%
+      as.Date() %>%
+      month(),
+    year = eventDate %>% as.Date() %>% year(),
+    coordinate_uncertainty = glue("{coordinateUncertaintyInMeters}m",
+                                  coordinateUncertaintyInMeters=coordinateUncertaintyInMeters),
+    month_year = glue("{month}-{year}",
+                      month = month,
+                      year = year) %>% my(),
+    display_name = ifelse(
+      is.na(vernacularName),
+      scientificName,
+      glue(
+        "{scientificName} ({vernacularName})",
+        scientificName = scientificName,
+        vernacularName = vernacularName
+      )
+    ),
     popup = glue(
       "
-                                  <b>{display_name}</b><br>
-                                  occurrence ID: {occurrence_id}<br>
-                                  Date Seen: {date_seen}<br>
-                                  Sex: {sex}<br>
-                                  Life Stage: {life_stage}<br>
-                                  Behavior: {behavior}",
+       <b>{display_name}</b><br>
+       occurrence ID: {occurrence_id}<br>
+       Date Seen: {date_seen}<br>
+       Sex: {sex}<br>
+       Life Stage: {life_stage}<br>
+       Behavior: {behavior}<br>
+       <b>Coordinate Uncertainty: {coordinate_uncertainty} </b>
+      ",
       display_name = display_name,
       occurrence_id = occurrenceID,
       date_seen = as.Date(eventDate),
       sex = sex,
       life_stage = lifeStage,
-      behavior = behavior
+      behavior = behavior,
+      coordinate_uncertainty=coordinate_uncertainty
     )
   )
 # Define UI for application that draws a histogram
@@ -40,16 +58,21 @@ ui <- fluidPage(
     "Biodiversity Dashboard"
   )),
   
+  fixedRow(
+  column(3,
   selectizeInput(
     "searchSpecies",
     "Search By Species",
     choices = NULL
-  ),
+  )),
+  column(3,
   sliderInput("filterTime",
-              "Filter By Date",
-              value = max(as.Date(occurence_pl$eventDate)),
-              min= min(as.Date(occurence_pl$eventDate)),
-              max= max(as.Date(occurence_pl$eventDate))),
+              "Filter By Date (Month-Year)",
+              value = c(min(as.Date(occurence_pl$month_year)),
+                        max(as.Date(occurence_pl$month_year))),
+              min= min(as.Date(occurence_pl$month_year)),
+              max= max(as.Date(occurence_pl$month_year)),
+              timeFormat="%b %Y"))),
   # Sidebar with a slider input for number of bins
   fixedRow(column(6,
                   leafletOutput("mapOutput")),
@@ -68,12 +91,19 @@ server <- function(input, output, session) {
     server = TRUE
   )
   
-  mapOutput <- eventReactive(input$searchSpecies, {
+  toListen <- reactive({
+    list(input$searchSpecies,input$filterTime)
+  })
+  
+  mapOutput <- eventReactive(toListen(), {
     occurence_pl %>%
-      filter(display_name %in% input$searchSpecies) %>%
+      filter(display_name == input$searchSpecies,
+             between(month_year,input$filterTime[1],input$filterTime[2])) %>%
       leaflet(options = leafletOptions(attributionControl=FALSE)) %>%
-      addTiles() %>%
-      addCircleMarkers(
+      addTiles() %>% 
+      addProviderTiles(provider=providers$Thunderforest.Transport) %>%
+      addMarkers(
+        clusterOptions = markerClusterOptions(),
         lng =  ~ longitudeDecimal,
         lat =  ~ latitudeDecimal,
         popup = ~ popup
@@ -82,19 +112,11 @@ server <- function(input, output, session) {
   
   output$mapOutput <- renderLeaflet(mapOutput())
   
-  timelineData <- eventReactive(input$searchSpecies,
+  timelineData <- eventReactive(toListen(),
                                 {
                                   occurence_pl %>%
-                                    filter(display_name == input$searchSpecies) %>%
-                                    mutate(
-                                      month = eventDate %>%
-                                        as.Date() %>%
-                                        month(),
-                                      year = eventDate %>% as.Date() %>% year(),
-                                      month_year = glue("{month}-{year}",
-                                                        month = month,
-                                                        year = year) %>% my()
-                                    ) %>%
+                                    filter(display_name == input$searchSpecies,
+                                           between(month_year,input$filterTime[1],input$filterTime[2])) %>%
                                     group_by(month_year) %>%
                                     summarize(n = n()) %>%
                                     plot_ly(
