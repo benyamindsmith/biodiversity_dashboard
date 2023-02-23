@@ -28,7 +28,8 @@ The finished product addresses the following:
 
   - There are no scaffolding tools like golem, packer, etc.
   
-  - There is a README (right here!)
+  - There is a README to help potential future developers of this app
+(right here!)
   
   - [IN PROGRESS]
 
