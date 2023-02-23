@@ -5,6 +5,7 @@ A submission of the Biodiversity Dashboard Assignment for the Appsilon Shiny Dev
 
 ## Introduction
 
+![](./www/dashboard_preview)
 
 ## Preprocessing
 
@@ -40,6 +41,8 @@ readr::write_csv("./data/occurrence_pl.csv")
 ```
 
 This can also be seen [preprocessing.R](https://github.com/benyamindsmith/appsilon_app/blob/main/preprocessing.R).
+
+**For the scope of this project, only the occurrence data set has been used. Should additional features be requested the multimedia dataset can also be used.**
 
 ## Modularized Code
 

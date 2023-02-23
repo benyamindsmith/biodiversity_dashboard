@@ -124,7 +124,7 @@ server <- function(input, output, session) {
                                       mode = "lines"
                                     ) %>%
                                     layout(
-                                      title = "occurrences Over Time",
+                                      title = "Occurrences Over Time",
                                       xaxis = list(title = ""),
                                       yaxis = list(title = "")
                                     )
