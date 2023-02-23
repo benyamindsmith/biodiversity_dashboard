@@ -1,11 +1,12 @@
-![](https://raw.githubusercontent.com/benyamindsmith/appsilon_app/main/www/appsilon_logo.png?token=GHSAT0AAAAAABXQSBT32RUKTJZV4OAE5MA4Y7WXVWQ)
+![](https://raw.githubusercontent.com/benyamindsmith/appsilon_app/main/www/appsilon_logo.png?token=GHSAT0AAAAAABXQSBT3BZGPBX7HTD3NGGMGY7W4ARQ)
+
 # Biodiversity Dashboard Assignment
 
 A submission of the Biodiversity Dashboard Assignment for the Appsilon Shiny Developer Job Posting
 
 ## Introduction
 
-![](./www/dashboard_preview)
+![image](https://user-images.githubusercontent.com/46410142/220816538-b836c938-99ed-4845-bb0f-eede3a59d106.png)
 
 ## Preprocessing
 
