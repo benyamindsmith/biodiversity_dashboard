@@ -31,7 +31,10 @@ The finished product addresses the following:
   - There is a README to help potential future developers of this app
 (right here!)
   
-  - [IN PROGRESS]
+  - [The app is hosted on shinyapps.io](https://benyamindsmith.shinyapps.io/appsilon_app/)
+  
+  - Relevant functionalites are modularized. See ["Modularized Code"](https://github.com/benyamindsmith/appsilon_app#modularized-code)  
+  - There are no unit tests. See ["Unit Tests"](https://github.com/benyamindsmith/appsilon_app#unit-tests)
 
 ## Dependencies
 
@@ -136,9 +139,11 @@ This can also be seen [preprocessing.R](https://github.com/benyamindsmith/appsil
 
 ## Modularized Code
 
-(Summarize data)
+While the technical requirement asked for the app to be decomposed into shinyModules, since the main task is simple enough the context to use shinyModules did not appear to make sense. Instead the code has been modulized in a manner which simplifies parts of the UI and server code (but does not follow shinyModules practices).  
 
 ## ShinyApps.io Deployment
+
+This app is hosted on ShinyApps.io [here](https://benyamindsmith.shinyapps.io/appsilon_app/)
 
 ## Unit Tests
 

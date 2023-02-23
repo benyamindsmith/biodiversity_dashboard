@@ -1,0 +1,14 @@
+name: appsilon_app
+title: appsilon_app
+username:
+account: benyamindsmith
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8394860
+bundleId: 6880040
+url: https://benyamindsmith.shinyapps.io/appsilon_app/
+when: 1677174028.1658
+lastSyncTime: 1677174028.16582
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|data/occurrence_pl.csv|preprocessing.R|README.md

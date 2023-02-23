@@ -28,6 +28,7 @@ month_year_slider <- function(id, display_name,dataset, month_year_column){
               timeFormat="%b %Y")
 }
 
+# Plotting functions (for server side)
 map_plot <- function(data, 
                      lng, 
                      lat, 
