@@ -1,5 +1,5 @@
 library(shiny)
-library(tidyverse)
+library(dplyr)
 library(lubridate)
 library(glue)
 library(leaflet)

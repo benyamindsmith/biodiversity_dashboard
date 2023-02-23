@@ -6,7 +6,50 @@ A submission of the Biodiversity Dashboard Assignment for the Appsilon Shiny Dev
 
 ## Introduction
 
+This dashboard focuses primarily on the ["Main Task"](https://docs.google.com/document/d/1E5DgNGL7cl6N1c1wMPmNggmGbRV-p1ySpL_Y-D4akOs/edit#heading=h.uvhg9zb5yl9e) as described in the assignment. 
+
+The finished product looks like this: 
+
 ![image](https://user-images.githubusercontent.com/46410142/220816538-b836c938-99ed-4845-bb0f-eede3a59d106.png)
+
+## What does this address
+
+The finished product addresses the following:
+
+1. The General Overview
+  
+  - The dashboard allows for users to visualize a selected species of observations on both a map and view visually how often it is observed over time.
+  
+  - The focus of the dashboard is only for Poland. 
+
+2. The Technical Requirements
+
+  - There are no scaffolding tools like golem, packer, etc.
+  
+  - There is a README (right here!)
+  
+  - [IN PROGRESS]
+
+## Dependencies
+
+The following packages are used for this dashboard: 
+
+1. For pre-processing
+    - `sparklyr`
+  
+    - `DBI`
+
+2. For the dashboard:
+    
+    - `shiny`
+    
+    - `dplyr`
+    
+    - `glue`
+    
+    - `leaflet`
+    
+    - `plotly`
 
 ## Preprocessing
 
@@ -43,7 +86,7 @@ readr::write_csv("./data/occurrence_pl.csv")
 
 This can also be seen [preprocessing.R](https://github.com/benyamindsmith/appsilon_app/blob/main/preprocessing.R).
 
-**For the scope of this project, only the occurrence data set has been used. Should additional features be requested the multimedia dataset can also be used.**
+**For the scope of this project, only the occurrence data set has been used. Should additional features be requested the multimedia data set can also be used.**
 
 ## Modularized Code
 
@@ -52,5 +95,8 @@ This can also be seen [preprocessing.R](https://github.com/benyamindsmith/appsil
 ## ShinyApps.io Deployment
 
 ## Unit Tests
+
+Due to the scope of this project and the way that the dashboard has been built, the author of this dashboard has not seen a need for unit tests on this dashboard. Should there be corner cases discovered, unit tests will be written. 
+
 
 
