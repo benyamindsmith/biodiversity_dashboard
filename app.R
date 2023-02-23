@@ -6,7 +6,7 @@ library(leaflet)
 library(plotly)
 library(sf)
 
-
+# NEXT: MODULARIZE THE CODE!!
 
 occurrence_pl <-
   readr::read_csv("./data/occurrence_pl.csv") %>%
