@@ -5,49 +5,69 @@ library(glue)
 library(leaflet)
 library(plotly)
 
-# TODO: MODULARIZE THE CODE!!
-# TODO: NAMING SUCKS. FIX IT!!
-occurrence_pl <-
-  readr::read_csv("./data/occurrence_pl.csv") %>%
-  mutate(
-    month = eventDate %>%
-      as.Date() %>%
-      month(),
-    year = eventDate %>% as.Date() %>% year(),
-    coordinate_uncertainty = glue("{coordinateUncertaintyInMeters}m",
-                                  coordinateUncertaintyInMeters=coordinateUncertaintyInMeters),
-    month_year = glue("{month}-{year}",
-                      month = month,
-                      year = year) %>% my(),
-    display_name = ifelse(
-      is.na(vernacularName),
-      scientificName,
-      glue(
-        "{scientificName} ({vernacularName})",
-        scientificName = scientificName,
-        vernacularName = vernacularName
-      )
-    ),
-    popup = glue(
-      "
-       <b>{display_name}</b><br>
-       occurrence ID: {occurrence_id}<br>
-       Date Seen: {date_seen}<br>
-       Sex: {sex}<br>
-       Life Stage: {life_stage}<br>
-       Behavior: {behavior}<br>
-       <b>Coordinate Uncertainty: {coordinate_uncertainty} </b>
-      ",
-      display_name = display_name,
-      occurrence_id = occurrenceID,
-      date_seen = as.Date(eventDate),
-      sex = sex,
-      life_stage = lifeStage,
-      behavior = behavior,
-      coordinate_uncertainty=coordinate_uncertainty
+# The data 
+occurrence_pl <-readr::read_csv("./data/occurrence_pl_preprocessed.csv") 
+
+####################
+# Modularized Code #
+####################
+
+# Month year range slider. Hides away the mess from the UI making it easier to read.  
+month_year_slider <- function(id, display_name,dataset, month_year_column){
+  
+  if(!is.Date(dataset[[month_year_column]])){
+    stop(glue("Invalid column selected. {month_year_column} does not have the 'Date' class"))
+  }
+  
+  sliderInput(id,
+              display_name,
+              value = c(min(dataset[[month_year_column]]),
+                        max(dataset[[month_year_column]])),
+              min= min(dataset[[month_year_column]]),
+              max= max(dataset[[month_year_column]]),
+              timeFormat="%b %Y")
+}
+
+map_plot <- function(data, 
+                     lng, 
+                     lat, 
+                     popup) {
+  data %>%
+    leaflet(options = leafletOptions(attributionControl=FALSE)) %>%
+    addTiles() %>%
+    addMarkers(
+      clusterOptions = markerClusterOptions(),
+      lng = as.formula(paste0("~", {{lng}})),
+      lat = as.formula(paste0("~", {{lat}})),
+      popup =as.formula(paste0("~", {{popup}}))
     )
-  )
-# Define UI for application that draws a histogram
+}
+
+timeline_plot <- function(data, 
+                          time_var, 
+                          value_var, 
+                          fill="blue",
+                          title="Occurences Over Time",
+                          xaxis_title="",
+                          yaxis_title=""){
+  
+  data %>% 
+  plot_ly(
+    x = as.formula(paste0("~", {{time_var}})),
+    y = as.formula(paste0("~", {{value_var}})),
+    fill = fill,
+    type = "scatter",
+    mode = "lines"
+  ) %>%
+    layout(
+      title = title,
+      xaxis = list(title = xaxis_title),
+      yaxis = list(title = yaxis_title)
+    )
+}
+######
+# UI #
+######
 ui <- fluidPage(
   # Application title
   titlePanel(title = div(
@@ -56,82 +76,79 @@ ui <- fluidPage(
     "Biodiversity Dashboard"
   )),
   
+  # Top Row- Species and Date Filters
   fixedRow(
-  column(3,
-  selectizeInput(
-    "searchSpecies",
-    "Search By Species",
-    choices = NULL
-  )),
-  column(3,
-  sliderInput("filterTime",
-              "Filter By Date (Month-Year)",
-              value = c(min(as.Date(occurrence_pl$month_year)),
-                        max(as.Date(occurrence_pl$month_year))),
-              min= min(as.Date(occurrence_pl$month_year)),
-              max= max(as.Date(occurrence_pl$month_year)),
-              timeFormat="%b %Y"))),
-  # Sidebar with a slider input for number of bins
-  fixedRow(column(6,
-                  leafletOutput("mapOutput")),
-           column(6,
-                  plotlyOutput("timelineOutput")))
+  # Search by Species: Since the number of choices to search is large. 
+  # A server side selective is done.
+  column(3,selectizeInput("searchSpecies","Search By Species",choices = NULL)),
+  
+  column(3, month_year_slider("filterTime","Filter By Date (Month-Year)",occurrence_pl,"month_year"))
+  ),
+  
+  # Bottom Row. Map and Timeline Outputs
+  fixedRow(
+    
+    column(6,leafletOutput("mapOutput")),
+    
+    column(6,plotlyOutput("timelineOutput"))
+    )
 )
 
+##########
+# Server #
+##########
 
-# Define server logic required to draw a histogram
 server <- function(input, output, session) {
+  
+  # Server side selectize to allow for users to search by species (scientific and vernacular)
   updateSelectizeInput(
     session,
     'searchSpecies',
-    choices = unique(occurrence_pl$display_name),
+    choices = unique(occurrence_pl[["display_name"]]),
     selected="Alces alces (Elk)",
     server = TRUE
   )
   
-  toListen <- reactive({
+  # A listener to check for changes in multiple inputs
+  filterListener <- reactive({
     list(input$searchSpecies,input$filterTime)
   })
   
-  mapOutput <- eventReactive(toListen(), {
-    occurrence_pl %>%
-      filter(display_name == input$searchSpecies,
-             between(month_year,input$filterTime[1],input$filterTime[2])) %>%
-      leaflet(options = leafletOptions(attributionControl=FALSE)) %>%
-      addTiles() %>% 
-      addMarkers(
-        clusterOptions = markerClusterOptions(),
-        lng =  ~ longitudeDecimal,
-        lat =  ~ latitudeDecimal,
-        popup = ~ popup
-      )
+  #Output Plots
+  mapOutput <- eventReactive(filterListener(), {
+    
+    # Filtered data for map
+    filtered_data <- occurrence_pl %>%
+                     filter(display_name == input$searchSpecies,
+                            between(month_year,input$filterTime[1],input$filterTime[2])) 
+    
+      # Map plot returned
+      map_plot(data=filtered_data,
+               lng= "longitudeDecimal",
+               lat="latitudeDecimal",
+               popup="popup")
   })
   
-  output$mapOutput <- renderLeaflet(mapOutput())
-  
-  timelineData <- eventReactive(toListen(),
-                                {
-                                  occurrence_pl %>%
-                                    filter(display_name == input$searchSpecies,
-                                           between(month_year,input$filterTime[1],input$filterTime[2])) %>%
-                                    group_by(month_year) %>%
-                                    summarize(n = n()) %>%
-                                    plot_ly(
-                                      x = ~ month_year,
-                                      y = ~ n,
-                                      fill = "blue",
-                                      type = "scatter",
-                                      mode = "lines"
+  timelineOutput <- eventReactive(filterListener(),{
+                                  # Filtered and aggregated data for timeline
+                                  agg_data <- occurrence_pl %>%
+                                    filter(
+                                      display_name == input$searchSpecies,
+                                      between(month_year, input$filterTime[1], input$filterTime[2])
                                     ) %>%
-                                    layout(
-                                      title = "Occurrences Over Time",
-                                      xaxis = list(title = ""),
-                                      yaxis = list(title = "")
-                                    )
+                                    group_by(month_year) %>%
+                                    summarize(n = n()) 
+                                    
+                                    # Timeline plot returned
+                                    timeline_plot(data=agg_data,
+                                                  time_var="month_year",
+                                                  value_var="n")
                                   
                                 })
   
-  output$timelineOutput <- renderPlotly(timelineData())
+  # Rendered plots
+  output$mapOutput <- renderLeaflet(mapOutput())
+  output$timelineOutput <- renderPlotly(timelineOutput())
   
 }
 
