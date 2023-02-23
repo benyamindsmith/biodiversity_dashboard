@@ -4,6 +4,15 @@
 
 A submission of the Biodiversity Dashboard Assignment for the Appsilon Shiny Developer Job Posting
 
+## Table of Contents
+- [Introduction](#introduction)
+- [What this addresses](#what-this-addresses)
+- [Dependencies](#dependencies)
+- [Preprocessing](#preprocessing)
+- [Modularized Code](#modularized-code)
+- [ShinyApps.io Deployment](#shinyappsio-deployment)
+- [Unit Tests](#unit-tests)
+
 ## Introduction
 
 This dashboard focuses primarily on the ["Main Task"](https://docs.google.com/document/d/1E5DgNGL7cl6N1c1wMPmNggmGbRV-p1ySpL_Y-D4akOs/edit#heading=h.uvhg9zb5yl9e) as described in the assignment. 
@@ -14,7 +23,7 @@ The finished product looks like this:
 
 **For the scope of this project, only the occurrence data set has been used. Should additional features be requested the multimedia data set can also be used.**
 
-## What does this address
+## What this addresses
 
 The finished product addresses the following:
 
