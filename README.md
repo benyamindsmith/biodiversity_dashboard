@@ -1,4 +1,4 @@
-# appsilon_app
+# Biodiversity Dashboard Assignment
 
 A submission of the Biodiversity Dashboard Assignment for the Appsilon Shiny Developer Job Posting
 
