@@ -5,10 +5,10 @@ account: benyamindsmith
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8394860
-bundleId: 6881504
+bundleId: 6881562
 url: https://benyamindsmith.shinyapps.io/appsilon_app/
-when: 1677201956.81551
-lastSyncTime: 1677201956.81553
+when: 1677204046.70696
+lastSyncTime: 1677204046.70697
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: .RData|data/occurrence_pl.csv|preprocessing.R|README.md

@@ -112,6 +112,18 @@ server <- function(input, output, session) {
     server = TRUE
   )
   
+  # Update slider input
+  observeEvent(input$searchSpecies, { 
+    filtered_data <- occurrence_pl %>%
+                     filter(display_name == input$searchSpecies)
+  updateSliderInput(
+    session,
+    "filterTime",
+    value= c(min(filtered_data[["month_year"]]),max(filtered_data[["month_year"]])),
+    min  = min(filtered_data[["month_year"]]),
+    max = max(filtered_data[["month_year"]])
+  )})
+ 
   # A listener to check for changes in multiple inputs
   filterListener <- reactive({
     list(input$searchSpecies,input$filterTime)
