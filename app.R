@@ -41,7 +41,7 @@ map_plot <- function(data,
       lng = as.formula(paste0("~", {{lng}})),
       lat = as.formula(paste0("~", {{lat}})),
       popup =as.formula(paste0("~", {{popup}}))
-    )
+    ) 
 }
 
 timeline_plot <- function(data, 
@@ -91,9 +91,9 @@ ui <- fluidPage(
   # Bottom Row. Map and Timeline Outputs
   fixedRow(
     
-    column(6,leafletOutput("mapOutput")),
+    column(6,leafletOutput("mapOutput", height=500)),
     
-    column(6,plotlyOutput("timelineOutput"))
+    column(6,plotlyOutput("timelineOutput",height=500))
     )
 )
 
