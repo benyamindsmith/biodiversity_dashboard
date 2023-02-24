@@ -71,7 +71,9 @@ timeline_plot <- function(data,
 ######
 ui <- fluidPage(
   # Application title
-  titlePanel(title = div(
+  titlePanel(
+    "Appsilon Biodiversity Dashboard",
+    title = div(
     img(src = "appsilon_logo.png",
         width = "200px"),
     "Biodiversity Dashboard"
@@ -144,7 +146,8 @@ server <- function(input, output, session) {
                                     timeline_plot(data=agg_data,
                                                   time_var="month_year",
                                                   value_var="n",
-                                                  title= glue("{input} Occurences Over Time", input=input$searchSpecies))
+                                                  title= glue("{input} Occurences Over Time", 
+                                                              input=input$searchSpecies))
                                   
                                 })
   
