@@ -48,7 +48,7 @@ timeline_plot <- function(data,
                           time_var, 
                           value_var, 
                           fill="blue",
-                          title="Occurences Over Time",
+                          title="",
                           xaxis_title="",
                           yaxis_title=""){
   
@@ -143,7 +143,8 @@ server <- function(input, output, session) {
                                     # Timeline plot returned
                                     timeline_plot(data=agg_data,
                                                   time_var="month_year",
-                                                  value_var="n")
+                                                  value_var="n",
+                                                  title= glue("{input} Occurences Over Time", input=input$searchSpecies))
                                   
                                 })
   
